@@ -1,0 +1,3 @@
+EventEase is an intelligent, full-stack event management system built with the MERN stack (MongoDB, Express.js, React, Node.js). It is designed to streamline the entire event experience—from organizing and promoting events to managing ticket sales, user profiles, and AI-powered ticket resale and repurchasing.
+
+Whether you're an event organizer or an attendee, EventEase provides a modern, secure, and user-friendly platform to manage every aspect of events. It features a real-time seat allocation system, waitlist-based ticket repurchasing, secure wallet transactions, and a powerful AI assistant to guide users through ticket resale workflows.
