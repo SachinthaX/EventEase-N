@@ -16,7 +16,7 @@ import { DeleteIcon, EditIcon, DownloadIcon, AddIcon } from '@chakra-ui/icons';
 import * as XLSX from 'xlsx';
 
 const ManageUsers = () => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [search, setSearch] = useState('');
@@ -43,8 +43,11 @@ const ManageUsers = () => {
   } = useDisclosure();
 
   const {
+    // eslint-disable-next-line no-unused-vars
     isOpen: isPasswordOpen,
+    // eslint-disable-next-line no-unused-vars
     onOpen: onPasswordOpen,
+    // eslint-disable-next-line no-unused-vars
     onClose: onPasswordClose
   } = useDisclosure();
 
@@ -67,8 +70,8 @@ const ManageUsers = () => {
   useEffect(() => {
     setFilteredUsers(
       users.filter(u =>
-        u.name.toLowerCase().includes(search.toLowerCase()) ||
-        u.email.toLowerCase().includes(search.toLowerCase())
+        (u.name || '').toLowerCase().includes(search.toLowerCase()) ||
+        (u.email || '').toLowerCase().includes(search.toLowerCase())
       )
     );
   }, [search, users]);
@@ -79,7 +82,7 @@ const ManageUsers = () => {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       setUsers(data);
-    } catch (err) {
+    } catch {
       toast({ title: 'Failed to fetch users', status: 'error' });
     } finally {
       setLoading(false);
