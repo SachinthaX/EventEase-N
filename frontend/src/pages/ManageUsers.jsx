@@ -16,7 +16,7 @@ import { DeleteIcon, EditIcon, DownloadIcon, AddIcon } from '@chakra-ui/icons';
 import * as XLSX from 'xlsx';
 
 const ManageUsers = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [search, setSearch] = useState('');
@@ -43,11 +43,8 @@ const ManageUsers = () => {
   } = useDisclosure();
 
   const {
-    // eslint-disable-next-line no-unused-vars
     isOpen: isPasswordOpen,
-    // eslint-disable-next-line no-unused-vars
     onOpen: onPasswordOpen,
-    // eslint-disable-next-line no-unused-vars
     onClose: onPasswordClose
   } = useDisclosure();
 
@@ -67,7 +64,18 @@ const ManageUsers = () => {
     fetchUsers();
   }, [user]);
 
-  useEffect(() => {
+
+  // useEffect(() => {
+  //   setFilteredUsers(
+  //     users.filter(u =>
+  //       u.name.toLowerCase().includes(search.toLowerCase()) ||
+  //       u.email.toLowerCase().includes(search.toLowerCase())
+  //     )
+  //   );
+  // }, [search, users]);
+
+
+    useEffect(() => {
     setFilteredUsers(
       users.filter(u =>
         (u.name || '').toLowerCase().includes(search.toLowerCase()) ||
@@ -82,7 +90,7 @@ const ManageUsers = () => {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       setUsers(data);
-    } catch {
+    } catch (err) {
       toast({ title: 'Failed to fetch users', status: 'error' });
     } finally {
       setLoading(false);
@@ -304,7 +312,7 @@ const ManageUsers = () => {
           </ModalBody>
           <ModalFooter>
             <Button colorScheme="green" mr={3} onClick={handleAddSubmit}>Create</Button>
-            <Button variant="ghost" onClick={onAddClose}>Cancel</Button>
+            <Button colorScheme="ghost" onClick={onAddClose}>Cancel</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
