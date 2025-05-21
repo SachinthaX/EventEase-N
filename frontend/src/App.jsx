@@ -21,8 +21,11 @@ import EventList from './pages/EventList.jsx';
 import ManageUsers from './pages/ManageUsers.jsx';
 import EventDetails from './pages/EventDetails.jsx';
 import ForgotPassword from './pages/ForgotPassword';
-import OAuthSuccess from './pages/OAuthSuccess'; // new
-
+import OAuthSuccess from './pages/OAuthSuccess'; 
+import AIAssistant from './pages/AIAssistant.jsx';
+import FeedbackPage from './pages/FeedbackPage.jsx';
+import AdminFeedbackPage from "./pages/AdminFeedbackPage";
+import AdminEventDetails from './pages/AdminEventDetails.jsx';
 
 // Components
 import AdminHeader from './componets/Header/AdminHeader.jsx';
@@ -35,6 +38,7 @@ import { AuthContext } from './context/AuthContext';
 
 // Styles
 import "./index.css";
+
 
 const App = () => {
   const { user } = useContext(AuthContext);
@@ -68,6 +72,11 @@ const App = () => {
               <Route path="/events" element={<EventList />} />
               <Route path="/admin/manage-users" element={<ManageUsers />} />
               <Route path="/admin/event/:id" element={<EventDetails />} />
+              <Route path="/ai-assistant" element={<AIAssistant />} />
+              <Route path="/feedback" element={<FeedbackPage />} />
+              <Route path="/admin/feedback" element={<AdminFeedbackPage />} />
+              <Route path="/admin/event-details/:id" element={<AdminEventDetails />} />
+              <Route path="/feedback/edit/:id" element={<FeedbackPage editMode />} />
               
 
             </Routes>
