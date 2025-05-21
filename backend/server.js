@@ -11,11 +11,16 @@ import userRoutes from './routes/userRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import eventRoutes from './routes/EventRoutes.js';
 import ticketRoutes from './routes/TicketRoutes.js';
+import feedbackRoutes from './routes/feedbackRoutes.js';
+import aiRoutes from './routes/aiRoutes.js';
+import waitlistRoutes from './routes/WaitlistRoutes.js';
 
 // Config and middleware
 import connectDB from './config/db.js';
 import configurePassport from './config/passport.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
+
+
 
 dotenv.config();
 connectDB();
@@ -50,10 +55,16 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/tickets', ticketRoutes);
+app.use('/api/feedback', feedbackRoutes);
+app.use('/api/waitlist', waitlistRoutes);
+
+app.use("/api/ai", aiRoutes);
 
 // Error handling
 app.use(notFound);
 app.use(errorHandler);
+
+
 
 // Start server
 const PORT = process.env.PORT || 5000;

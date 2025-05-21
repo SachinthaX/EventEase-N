@@ -4,7 +4,7 @@ import generateToken from '../utils/generateToken.js';
 
 
 export const googleCallback = asyncHandler(async (req, res) => {
-  const token = generateToken(req.user._id);
+  const token = generateToken(req.user);
   res.redirect(`${process.env.CLIENT_URL}/oauth-success?token=${token}&name=${req.user.name}&email=${req.user.email}&role=${req.user.role}&id=${req.user._id}`);
 });
 
