@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import axios from "../services/axios";
 
-const Profile = () => {
+const Profile = () => { 
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const toast = useToast();
@@ -30,6 +30,7 @@ const Profile = () => {
   const [formData, setFormData] = useState({ name: "", email: "" });
   const [passwordData, setPasswordData] = useState({ currentPassword: "", newPassword: "" });
   const [showPassword, setShowPassword] = useState(false);
+  const [myFeedback, setMyFeedback] = useState([]);
 
   useEffect(() => {
     if (!user?.token) return navigate("/login");
@@ -56,6 +57,20 @@ const Profile = () => {
         console.error("Failed to fetch waitlist:", err.message);
       }
     };
+
+    const fetchMyFeedback = async () => {
+      try {
+        const res = await axios.get("/api/feedback/mine", {
+          headers: { Authorization: `Bearer ${user.token}` },
+        });
+        setMyFeedback(res.data);
+      } catch (err) {
+        console.error("Failed to load feedback", err.message);
+      }
+    };
+
+    fetchMyFeedback();
+
 
     fetchProfile();
     fetchWaitlist();
@@ -158,12 +173,14 @@ const Profile = () => {
     return acc;
   }, {});
 
+  
+
   return (
     <Box bg="gray.50" minH="100vh" py={16}>
       <Container maxW="4xl" bg="white" boxShadow="xl" p={8} rounded="2xl">
         <HStack justifyContent="space-between" mb={6}>
           <Heading fontSize="2xl">{profile.name}'s Profile</Heading>
-          <Button colorScheme="red" onClick={handleLogout} size="sm">Logout</Button>
+          <Button colorScheme="purple" onClick={() => navigate("/ai-assistant")} size="sm">🤖 AI Assistant</Button>
         </HStack>
 
         {/* 🧾 Account Settings */}
@@ -236,11 +253,12 @@ const Profile = () => {
           <Heading size="md" mb={4}>Tickets & Waitlist</Heading>
           <Tabs variant="soft-rounded" colorScheme="teal">
             <TabList>
-              <Tab>Upcoming</Tab>
-              <Tab>Past</Tab>
-              <Tab>Resell</Tab>
+              <Tab>Upcoming Events </Tab>
+              <Tab>Past Events</Tab>
+              <Tab>Pending Resell</Tab>
               <Tab>Sold</Tab>
               <Tab>Waitlist</Tab>
+              <Tab>My Feedback</Tab>
             </TabList>
             <TabPanels>
               <TabPanel>
@@ -262,15 +280,33 @@ const Profile = () => {
                   </VStack>
                 ) : <Center py={6}><Text>No upcoming tickets 😕</Text></Center>}
               </TabPanel>
+              
               <TabPanel>
                 {pastTickets.length > 0 ? (
-                  <List spacing={3}>
+                  <List spacing={4}>
                     {pastTickets.map((t) => (
-                      <ListItem key={t._id}>{t.event?.eventName} - {t.seatNumber}</ListItem>
+                      <ListItem key={t._id}>
+                        <Box>
+                          <Text>{t.event?.eventName} - {t.seatNumber}</Text>
+                          <HStack spacing={2} mt={2}>
+                            <Button
+                              size="xs"
+                              colorScheme="teal"
+                              onClick={() => navigate(`/feedback?eventId=${t.event?._id}`)}
+                            >
+                              Give Feedback
+                            </Button>
+                          </HStack>
+                        </Box>
+                      </ListItem>
                     ))}
                   </List>
-                ) : <Center py={6}><Text>No past tickets 📭</Text></Center>}
+                ) : (
+                  <Center py={6}><Text>No past tickets 📭</Text></Center>
+                )}
               </TabPanel>
+
+
               <TabPanel>
                 {pendingResell.length > 0 ? (
                   <List spacing={3}>
@@ -298,7 +334,49 @@ const Profile = () => {
                   </List>
                 ) : <Center py={6}><Text>No waitlist entries</Text></Center>}
               </TabPanel>
+              <TabPanel>
+                {myFeedback.length > 0 ? (
+                  <VStack spacing={4} align="stretch">
+                    {myFeedback.map((fb) => {
+                      const isEditable = new Date() - new Date(fb.createdAt) <= 24 * 60 * 60 * 1000;
+
+                      return (
+                        <Box key={fb._id} p={4} bg="white" borderRadius="md" boxShadow="sm">
+                          <Text fontWeight="bold">Type: {fb.type}</Text>
+
+                          {fb.event?.eventName && (
+                            <Text><strong>Event:</strong> {fb.event.eventName}</Text>
+                          )}
+
+                          <Text>Rating: {"⭐".repeat(fb.rating)}</Text>
+                          <Text>Comment: {fb.comment}</Text>
+                          <Text fontSize="sm" color="gray.500">
+                            {new Date(fb.createdAt).toLocaleString()}
+                          </Text>
+
+                          {isEditable && (
+                            <Button
+                              size="xs"
+                              colorScheme="teal"
+                              mt={2}
+                              onClick={() => navigate(`/feedback/edit/${fb._id}`)}
+                            >
+                              ✏️ Edit
+                            </Button>
+                          )}
+                        </Box>
+                      );
+                    })}
+                  </VStack>
+
+                ) : (
+                  <Center py={6}><Text>No feedback submitted yet 📝</Text></Center>
+                )}
+              </TabPanel>
+
+
             </TabPanels>
+
           </Tabs>
         </Box>
       </Container>
