@@ -40,3 +40,32 @@
 .read-the-docs {
   color: #888;
 }
+
+
+
+
+/* App.css */
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  padding: 2rem 0;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 1rem;
+  }
+}
+
+
+
+
+
+
+
